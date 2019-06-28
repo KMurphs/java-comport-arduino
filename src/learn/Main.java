@@ -42,7 +42,7 @@ public class Main extends javax.swing.JFrame {
         label1.setBackground(new java.awt.Color(0, 176, 240));
         label1.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
         label1.setName(""); // NOI18N
-        label1.setText("Run System");
+        label1.setText("Run fdxsgfchjgfcjhgcj");
         getContentPane().add(label1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 220, 120));
 
         Exit.setAlignment(java.awt.Label.CENTER);
