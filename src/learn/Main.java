@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package learn;
+import java.sql.*;  
 
 /**
  *
@@ -16,6 +17,9 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+select();
+//insert();
+//update();
     }
 
     /**
@@ -29,12 +33,11 @@ public class Main extends javax.swing.JFrame {
 
         label1 = new java.awt.Label();
         Exit = new java.awt.Label();
+        RegNewUser = new java.awt.Label();
         Settings = new java.awt.Label();
-        label4 = new java.awt.Label();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(250, 450));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -43,7 +46,7 @@ public class Main extends javax.swing.JFrame {
         label1.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
         label1.setName(""); // NOI18N
         label1.setText("Run System");
-        getContentPane().add(label1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 220, 120));
+        getContentPane().add(label1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 270, 120));
 
         Exit.setAlignment(java.awt.Label.CENTER);
         Exit.setBackground(new java.awt.Color(221, 131, 131));
@@ -56,7 +59,20 @@ public class Main extends javax.swing.JFrame {
                 ExitMouseClicked(evt);
             }
         });
-        getContentPane().add(Exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 220, 30));
+        getContentPane().add(Exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 270, 30));
+
+        RegNewUser.setAlignment(java.awt.Label.CENTER);
+        RegNewUser.setBackground(new java.awt.Color(0, 0, 0));
+        RegNewUser.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
+        RegNewUser.setForeground(new java.awt.Color(255, 255, 255));
+        RegNewUser.setName(""); // NOI18N
+        RegNewUser.setText("Register New User");
+        RegNewUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RegNewUserMouseClicked(evt);
+            }
+        });
+        getContentPane().add(RegNewUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 220, 280, 30));
 
         Settings.setAlignment(java.awt.Label.CENTER);
         Settings.setBackground(new java.awt.Color(0, 0, 0));
@@ -69,19 +85,16 @@ public class Main extends javax.swing.JFrame {
                 SettingsMouseClicked(evt);
             }
         });
-        getContentPane().add(Settings, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 220, 30));
-
-        label4.setAlignment(java.awt.Label.CENTER);
-        label4.setBackground(new java.awt.Color(0, 0, 0));
-        label4.setFont(new java.awt.Font("Calibri Light", 1, 14)); // NOI18N
-        label4.setForeground(new java.awt.Color(255, 255, 255));
-        label4.setName(""); // NOI18N
-        label4.setText("Register New User");
-        getContentPane().add(label4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 220, 30));
+        getContentPane().add(Settings, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 270, 30));
 
         jLabel1.setBackground(new java.awt.Color(255, 153, 153));
         jLabel1.setForeground(new java.awt.Color(238, 0, 0));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Picture3.png"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -30, -1, -1));
 
         pack();
@@ -91,11 +104,111 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_ExitMouseClicked
+    private void select() {                                  
+        // TODO add your handling code here:
+               System.out.println("Hello");
+        // https://www.javatpoint.com/example-to-connect-to-the-mysql-database
+        try{  
+            Class.forName("com.mysql.jdbc.Driver");  
+            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
+            //here attendancereg is database name, fingerprintApp is username and password 
+
+            Statement stmt = con.createStatement();  
+            ResultSet rs = stmt.executeQuery("select * FROM attendancereg.students;");  
+
+            while(rs.next())  
+//                System.out.println(rs);
+               // System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) 
+                 //       + " "  + rs.getString(5) + " " + rs.getString(6) + " " + rs.getString(7) + " " + rs.getString(8));  
+            Settings.setText(rs.getString(2));
+                        
+            con.close();  
+        } catch(Exception e){ 
+            System.out.println(e);
+        }
+    } 
+     private void insert() {                                  
+        // TODO add your handling code here:
+               System.out.println("Hello");
+        // https://www.javatpoint.com/example-to-connect-to-the-mysql-database
+        try{  
+            Class.forName("com.mysql.jdbc.Driver");  
+            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
+            //here attendancereg is database name, fingerprintApp is username and password 
+      
+            String query= "INSERT INTO `attendancereg`.`students` (`Student_ID_No`, `Student_Number`, `Name&surname`, `Fingerprint`, `Fingerprint_ID`, `isActive`, `Priviledges`) VALUES (?,?, ?, ?, ?, ?, ?);";
+            
+      PreparedStatement preparedStmt = con.prepareStatement(query);
+      preparedStmt.setString (1, "000000");
+      preparedStmt.setString (2, "8888888");
+      preparedStmt.setString   (3, "king ");
+      preparedStmt.setString(4, "tttttyyyyttt");
+      preparedStmt.setInt    (5, 7);
+      preparedStmt.setInt    (6, 1);
+      preparedStmt.setInt    (7, 1);
+      // execute the preparedstatement
+      preparedStmt.execute();
+              
+            con.close();  
+        } 
+        catch(Exception e){ 
+            System.out.println(e);
+        }
+    } 
+     
+      private void update(){
+          try{  
+            Class.forName("com.mysql.jdbc.Driver");  
+            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
+            //here attendancereg is database name, fingerprintApp is username and password 
+            
+String query="UPDATE `attendancereg`.`students` SET `Name&surname` = 'JohRN', WHERE (`TableID` = '23')";
+
+ PreparedStatement preparedStmt = con.prepareStatement(query);
+     preparedStmt.setString(3, "Fred");
+   preparedStmt.executeUpdate();
+            con.close();  
+        } 
+        catch(Exception e){ 
+            System.out.println(e);
+        }
+      }
+      
+    private void RegNewUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RegNewUserMouseClicked
+        // TODO add your handling code here:
+        try{  
+            Class.forName("com.mysql.jdbc.Driver");  
+            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
+            //here attendancereg is database name, fingerprintApp is username and password 
+
+            Statement stmt = con.createStatement();  
+            ResultSet rs = stmt.executeQuery("select * FROM attendancereg.students;");  
+
+            while(rs.next())  
+//                System.out.println(rs);
+                System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) 
+                        + " "  + rs.getString(5) + " " + rs.getString(6) + " " + rs.getString(7) + " " + rs.getString(8));  
+            
+            con.close();  
+        } catch(Exception e){ 
+            System.out.println(e);
+        }
+
+      //new main().setvisible(true);
+       dispose();
+      new RegisterNewUser().setVisible(true);
+         
+      
+     
+    }//GEN-LAST:event_RegNewUserMouseClicked
 
     private void SettingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SettingsMouseClicked
         // TODO add your handling code here:
-        
     }//GEN-LAST:event_SettingsMouseClicked
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -134,9 +247,9 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label Exit;
+    private java.awt.Label RegNewUser;
     private java.awt.Label Settings;
     private javax.swing.JLabel jLabel1;
     private java.awt.Label label1;
-    private java.awt.Label label4;
     // End of variables declaration//GEN-END:variables
 }
