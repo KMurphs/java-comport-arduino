@@ -4,7 +4,11 @@
  * and open the template in the editor.
  */
 package learn;
-import java.sql.*;  
+import java.sql.*;
+import java.util.Dictionary;
+
+
+
 
 /**
  *
@@ -16,10 +20,47 @@ public class Main extends javax.swing.JFrame {
      * Creates new form Main
      */
     public Main() {
+                try{  
+            Class.forName("com.mysql.jdbc.Driver");  
+            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
+            //here attendancereg is database name, fingerprintApp is username and password 
+
+            Statement stmt = con.createStatement();  
+            ResultSet rs = stmt.executeQuery("select * FROM attendancereg.students;");  
+
+            while(rs.next())  
+//                System.out.println(rs);
+                System.out.println(rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4) 
+                        + " "  + rs.getString(5) + " " + rs.getString(6) + " " + rs.getString(7) + " " + rs.getString(8));  
+            
+            con.close();  
+        } catch(Exception e){ 
+            System.out.println(e);
+        }
         initComponents();
-select();
-//insert();
-//update();
+      select();
+        //insert();
+         webServerLauncher javaServerThread = new webServerLauncher();
+         javaServerThread.init();
+        
+        //update();
+        
+        try
+        {
+            FPComms.init("COM4");
+            //FPComms.send("ping", "java");
+            FPComms.send("uploadFP", "1");
+            Dictionary Msg = FPComms.receive(10000);
+            System.out.println("Command is: " + Msg.get("Command"));
+            System.out.println("Data is: " + Msg.get("Data"));
+            System.out.println("Data Length is: " + Msg.get("DataLength"));
+            FPComms.close();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        
     }
 
     /**
@@ -136,18 +177,19 @@ select();
             Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
             //here attendancereg is database name, fingerprintApp is username and password 
       
-            String query= "INSERT INTO `attendancereg`.`students` (`Student_ID_No`, `Student_Number`, `Name&surname`, `Fingerprint`, `Fingerprint_ID`, `isActive`, `Priviledges`) VALUES (?,?, ?, ?, ?, ?, ?);";
-            
-      PreparedStatement preparedStmt = con.prepareStatement(query);
-      preparedStmt.setString (1, "000000");
-      preparedStmt.setString (2, "8888888");
-      preparedStmt.setString   (3, "king ");
-      preparedStmt.setString(4, "tttttyyyyttt");
-      preparedStmt.setInt    (5, 7);
-      preparedStmt.setInt    (6, 1);
-      preparedStmt.setInt    (7, 1);
-      // execute the preparedstatement
-      preparedStmt.execute();
+            //String query= "INSERT INTO `attendancereg`.`students` (`Student_ID_No`, `Student_Number`, `Name&surname`, `Fingerprint`, `Fingerprint_ID`, `isActive`, `Priviledges`) VALUES (?,?, ?, ?, ?, ?, ?);";
+  String query= "INSERT INTO `attendancereg`.`students` (`UserID`, `Name`, `Surname`, `IDNumber`, `StudentNumber`, `FingerPrint`, `Priviledge`, `isActive`) VALUES ('2', 'Palesa', 'Ruberu', '8005125578', '210258528', 'ruuuub', '1', '1')";
+          
+//      PreparedStatement preparedStmt = con.prepareStatement(query);
+//      preparedStmt.setString (1, "000000");
+//      preparedStmt.setString (2, "8888888");
+//      preparedStmt.setString   (3, "king ");
+//      preparedStmt.setString(4, "tttttyyyyttt");
+//      preparedStmt.setInt    (5, 7);
+//      preparedStmt.setInt    (6, 1);
+//      preparedStmt.setInt    (7, 1);
+//      // execute the preparedstatement
+//      preparedStmt.execute();
               
             con.close();  
         } 

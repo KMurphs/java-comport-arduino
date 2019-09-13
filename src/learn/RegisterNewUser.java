@@ -210,15 +210,16 @@ public class RegisterNewUser extends javax.swing.JFrame {
   Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
  //here attendancereg is database name, fingerprintApp is username and password 
       
- String query= "INSERT INTO `attendancereg`.`students` (`StudentIDNo`, `StudentNumber`, `Nameandsurname`, `Fingerprint`) VALUES (?,?, ?, ?)";
-            
-      PreparedStatement preparedStmt = con.prepareStatement(query);
-      preparedStmt.setString (1, IDNumField.getText());
-      preparedStmt.setString (2, StudentNumField.getText());
-      preparedStmt.setString   (3, NameField.getText());
-      preparedStmt.setString(4, "son");
+ //String query= "INSERT INTO `attendancereg`.`students` (`StudentIDNo`, `StudentNumber`, `Nameandsurname`, `Fingerprint`) VALUES (?,?, ?, ?)";
+   String query="INSERT INTO `attendancereg`.`students` (`UserID`, `Name`, `Surname`, `IDNumber`, `StudentNumber`, `FingerPrint`, `Priviledge`, `isActive`) VALUES ('2', 'SS', '22', '222', '222', '2E', '1', '1')";
+    
+     //PreparedStatement preparedStmt = con.prepareStatement(query);
+//      preparedStmt.setString (1, IDNumField.getText());
+//      preparedStmt.setString (2, StudentNumField.getText());
+//      preparedStmt.setString   (3, NameField.getText());
+//      preparedStmt.setString(4, "son");
 
-     preparedStmt.execute();
+    // preparedStmt.execute();
               
             con.close();  
         } 
