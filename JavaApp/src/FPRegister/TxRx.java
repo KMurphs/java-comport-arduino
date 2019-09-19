@@ -9,7 +9,7 @@
  * @author johannesr
  */
 
-package learn;
+package FPRegister;
 
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
