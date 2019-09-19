@@ -5,22 +5,33 @@
  */
 package learn;
 
+import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author johannesr
  */
 public class FPReader extends javax.swing.JFrame {
+    
+    private JsonObject userData;
 
     /**
      * Creates new form Main
      */
-    public FPReader() {
+    public FPReader(JsonObject userInData) {
         initComponents();
-        jTextArea1.setText("NameField.getText()");
+        //jTextArea1.setText("NameField.getText()");
        //  NameField.getText();
        // IDNumField.getText();
        // StudentNumField.getText();
-        
+        userData = userInData;
+        System.out.println(userData.toString());
         
     }
 
@@ -34,9 +45,10 @@ public class FPReader extends javax.swing.JFrame {
     private void initComponents() {
 
         Return = new java.awt.Label();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        uploadFPButton = new javax.swing.JButton();
+        doRegButton = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -54,17 +66,37 @@ public class FPReader extends javax.swing.JFrame {
                 ReturnMouseClicked(evt);
             }
         });
-        getContentPane().add(Return, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 390, 280, 30));
-        getContentPane().add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 230, 280, 70));
+        getContentPane().add(Return, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 390, 290, 30));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        uploadFPButton.setText("Upload Fingerprint");
+        uploadFPButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadFPButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(uploadFPButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 290, 60));
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 260, 180));
+        doRegButton.setText("Read Fingerprint");
+        doRegButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doRegButtonActionPerformed(evt);
+            }
+        });
+        getContentPane().add(doRegButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 290, 60));
+
+        jButton3.setText("Retry");
+        jButton3.setToolTipText("");
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 290, 50));
+
+        jButton4.setText("Read Fingerprint");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 150, 290, 60));
 
         jLabel1.setBackground(new java.awt.Color(255, 153, 153));
-        jLabel1.setForeground(new java.awt.Color(238, 0, 0));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Picture3.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, -30, -1, -1));
 
@@ -76,6 +108,64 @@ public class FPReader extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_ReturnMouseClicked
 
+    private void doRegButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doRegButtonActionPerformed
+        try {
+            
+            System.out.println(userData.get("UserID"));
+            System.out.println(userData.get("Priviledge"));
+            
+            FPComms.init("COM4");
+            //FPComms.send("ping", "java");
+            FPComms.send("doReg", userData.get("UserID")+":"+userData.get("Priviledge"));
+            Dictionary Msg = FPComms.receive(10000);
+            System.out.println("Command is: " + Msg.get("Command"));
+            System.out.println("Data is: " + Msg.get("Data"));
+            System.out.println("Data Length is: " + Msg.get("DataLength"));
+            FPComms.close();
+        } catch (Exception ex) {
+            Logger.getLogger(FPReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+    }//GEN-LAST:event_doRegButtonActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void uploadFPButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadFPButtonActionPerformed
+             try {
+            
+            System.out.println(userData.get("UserID"));
+            System.out.println(userData.get("Priviledge"));
+            
+            FPComms.init("COM4");
+            //FPComms.send("ping", "java");
+            FPComms.send("uploadFP", userData.get("UserID")+"");
+            Dictionary Msg = FPComms.receive(10000);
+            System.out.println("Command is: " + Msg.get("Command"));
+            System.out.println("Data is: " + Msg.get("Data"));
+            System.out.println("Data Length is: " + Msg.get("DataLength"));
+            FPComms.close();
+            
+            uploadFPtoDataBase(Msg);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(FPReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_uploadFPButtonActionPerformed
+private void uploadFPtoDataBase(Dictionary fpData){
+        try {
+            HashMap<String, String> postInData = new HashMap<>();
+            postInData.put("FingerPrint", fpData.get("Data")+""); 
+            userData = httpRequest.post("http://localhost:3000/users/"+userData.get("UserID"), postInData);
+
+        } catch (ProtocolException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+}
     /**
      * @param args the command line arguments
      */
@@ -107,16 +197,17 @@ public class FPReader extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FPReader().setVisible(true);
+                new FPReader(new JsonObject()).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label Return;
+    private javax.swing.JButton doRegButton;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JButton uploadFPButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,9 +5,16 @@
  */
 package learn;
 
+import com.google.gson.JsonObject;
+import java.io.IOException;
+import java.net.ProtocolException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *
@@ -35,7 +42,8 @@ public class RegisterNewUser extends javax.swing.JFrame {
         StudentNumField = new javax.swing.JTextField();
         IDNumField = new javax.swing.JTextField();
         NameField = new javax.swing.JTextField();
-        GetFPButton = new javax.swing.JButton();
+        uploaddataButton = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -69,7 +77,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
                 StudentNumFieldActionPerformed(evt);
             }
         });
-        getContentPane().add(StudentNumField, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 280, 30));
+        getContentPane().add(StudentNumField, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 160, 280, 30));
 
         IDNumField.setText("Enter ID Number");
         IDNumField.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -85,7 +93,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
                 IDNumFieldActionPerformed(evt);
             }
         });
-        getContentPane().add(IDNumField, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 280, 30));
+        getContentPane().add(IDNumField, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 280, 30));
 
         NameField.setText("Enter Your Name");
         NameField.setToolTipText("tftfytfytfy");
@@ -109,13 +117,21 @@ public class RegisterNewUser extends javax.swing.JFrame {
         });
         getContentPane().add(NameField, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 280, 30));
 
-        GetFPButton.setText("Get Fingerprints");
-        GetFPButton.addActionListener(new java.awt.event.ActionListener() {
+        uploaddataButton.setText("Upload User Details");
+        uploaddataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GetFPButtonActionPerformed(evt);
+                uploaddataButtonActionPerformed(evt);
             }
         });
-        getContentPane().add(GetFPButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 290, 40));
+        getContentPane().add(uploaddataButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 290, 40));
+
+        jTextField1.setText("Enter Your Surname");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 80, 280, 30));
 
         jLabel1.setBackground(new java.awt.Color(255, 153, 153));
         jLabel1.setForeground(new java.awt.Color(238, 0, 0));
@@ -190,9 +206,7 @@ public class RegisterNewUser extends javax.swing.JFrame {
 
     private void StudentNumFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_StudentNumFieldFocusLost
         // TODO add your handling code here:
-               if("".equals(StudentNumField.getText())){
-            StudentNumField.setText("Enter Your Student Number");
-        }
+
     }//GEN-LAST:event_StudentNumFieldFocusLost
 
     private void StudentNumFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentNumFieldActionPerformed
@@ -200,40 +214,49 @@ public class RegisterNewUser extends javax.swing.JFrame {
         
     }//GEN-LAST:event_StudentNumFieldActionPerformed
 
-    private void GetFPButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GetFPButtonActionPerformed
-        // TODO add your handling code here:
-        //NameField.getText();
-        //IDNumField.getText();
-        //StudentNumField.getText();
-  try{  
-  Class.forName("com.mysql.jdbc.Driver");  
-  Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/attendancereg","fingerprintApp","fingerprintApp");  
- //here attendancereg is database name, fingerprintApp is username and password 
-      
- //String query= "INSERT INTO `attendancereg`.`students` (`StudentIDNo`, `StudentNumber`, `Nameandsurname`, `Fingerprint`) VALUES (?,?, ?, ?)";
-   String query="INSERT INTO `attendancereg`.`students` (`UserID`, `Name`, `Surname`, `IDNumber`, `StudentNumber`, `FingerPrint`, `Priviledge`, `isActive`) VALUES ('2', 'SS', '22', '222', '222', '2E', '1', '1')";
-    
-     //PreparedStatement preparedStmt = con.prepareStatement(query);
-//      preparedStmt.setString (1, IDNumField.getText());
-//      preparedStmt.setString (2, StudentNumField.getText());
-//      preparedStmt.setString   (3, NameField.getText());
-//      preparedStmt.setString(4, "son");
-
-    // preparedStmt.execute();
-              
-            con.close();  
-        } 
-        catch(Exception e){ 
-            System.out.println(e);
+    private void uploaddataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploaddataButtonActionPerformed
+  String studentnumber=StudentNumField.getText();
+  String name=NameField.getText();
+  String IDno=IDNumField.getText();
+  JsonObject userData = new JsonObject();;
+        try {
+            HashMap<String, String> postInData = new HashMap<>();
+            postInData.put("FingerPrint", "<fp data for IDno "+ IDno +" not available yet>"); 
+            postInData.put("Name", name);
+            postInData.put("isActive", "1");
+            postInData.put("Priviledge", "1");
+            postInData.put("Surname", "ur surname");           
+            postInData.put("IDNumber", IDno);       
+            postInData.put("StudentNumber", studentnumber);
+            userData = httpRequest.post("http://localhost:3000/users/", postInData);
+            System.out.println(userData.toString());
+            System.out.println(userData.get("UserID"));
+            System.out.println(userData.get("Priviledge"));
+        } catch (ProtocolException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
-        
+       dispose(); 
+      new FPReader(userData).setVisible(true);  
+    }//GEN-LAST:event_uploaddataButtonActionPerformed
 
-        
-        
-    }//GEN-LAST:event_GetFPButtonActionPerformed
-
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+private void postdata(){
+        try {
+            HashMap<String, String> getInData = new HashMap<>();
+            JsonObject getData = httpRequest.get("http://localhost:3000/users/2", getInData);
+            System.out.println(getData.toString());
+            System.out.println(getData.get("StudentNumber"));
+        } catch (ProtocolException ex) {
+            Logger.getLogger(RegisterNewUser.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(RegisterNewUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+}
 
     
     /**
@@ -274,10 +297,11 @@ public class RegisterNewUser extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label Exit;
-    private javax.swing.JButton GetFPButton;
     private javax.swing.JTextField IDNumField;
     private javax.swing.JTextField NameField;
     private javax.swing.JTextField StudentNumField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JButton uploaddataButton;
     // End of variables declaration//GEN-END:variables
 }
