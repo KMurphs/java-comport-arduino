@@ -1,0 +1,6 @@
+https://playground.arduino.cc/Interfacing/Java/
+https://playground.arduino.cc/Interfacing/Java/
+http://fizzed.com/oss/rxtx-for-java
+https://stackoverflow.com/questions/10714785/giving-java-library-path-in-netbeans-for-dll-so-files/11898261
+
+https://playground.arduino.cc/Interfacing/Java/
